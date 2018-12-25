@@ -13,17 +13,19 @@ import pandas_datareader.data as web
 #GDP
 ################################################################################
 
-class GDP:
+class FRED:
 
 	def __init__(self, adj=False):
 		self.adj = adj
 		return
 
 	def Start_Date(self, Year, Month, Day):
+		""" This function defines the start date for the query"""
 		self.start = dt.datetime(Year, Month, Day)
 		return self.start
 
 	def End_Date(self, Year, Month, Day):
+		""" This function defines the End Date for the query."""
 		self.end = dt.datetime(Year, Month, Day)
 		return self.end
 
@@ -32,26 +34,26 @@ class GDP:
 		return
 # Define a function to pull in d
 	def GET(self, start, end):
+		""" This function is the wrapper on top of pandas datareader.
+		start: Start Date
+		end: End Date
+		"""
 		variable = Vars['GDP']
 		df = web.DataReader(variable, 'fred', self.start, self.end)
 		print(df.head(10))
 		return
 
 	def StateGDP(self, state):
+		""" This function creates the correct query to call for a State's rGDP."""
 		global df
-		state = str(state)
-		if len(state) == 0:
-			return state
-		elif len(state) == 2:
-			df = web.DataReader(state + 'NGSP' , 'fred', self.start, self.end)
-			return df
-		else:
-			state = state[:1]
-			df = web.DataReader(state + 'NGSP' , 'fred', self.start, self.end)
-			return df
-
-GDP = GDP()
-GDP.Start_Date(1900,1,1)
-GDP.End_Date(2018,1,1)
-GDP.StateGDP('IN')
-df.head()
+		try:
+			if len(state) == 0:
+				return state
+			elif len(state) == 2:
+				df = web.DataReader(state + 'NGSP' , 'fred', self.start, self.end)
+				return df
+			else:
+				assert len(state) == 2, "State should be a string of length 2"
+		except:
+			assert len(state) == 2, "State should be a string of length 2"
+		return
