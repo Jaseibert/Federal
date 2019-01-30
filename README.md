@@ -2,15 +2,60 @@
 
 This is a simple package built on top of pandas datareader to pull in Federal Reserve Data from the Federal Reserve in St. Louis (FRED)
 
-Usage:
+## Basic Usage:
 
-1. Instantiate an instance of GDP:
-2. Use it to define the Start & End Dates
-3. Declare the State ID that you are looking for.
+### 1. Setting Start & End Dates
 
-Example:
-1. FRED = FRED()
-2. FRED.Start_Date(1900,1,1)
-3. FRED.End_Date(2018,1,1)
-4. FRED.StateGDP('IN')
-5. df.head()
+```python
+
+# Setting Dates
+fred = FRED()
+fred.start_date(1900,1,1)
+fred.end_date(2018,1,1)
+```
+### 2. Pulling GDP (nGDP or rGDP)
+
+```python
+
+# Nominal GDP
+df = fred.GDP(nominal=True)
+df.head()
+
+# real GDP - Default
+df = fred.GDP()
+df.head()
+
+# Seasonally-Adjusted nGDP
+df = fred.GDP(nominal=True, sa=True)
+df.head()
+
+# Seasonally-Adjusted rGDP
+df = fred.GDP(sa=True)
+df.head()
+```
+
+### 3. Pulling State GDP (GSP)
+
+```python
+
+# State GDP
+df = fred.stateGDP('IN')
+df.head()
+```
+
+### 3. Pulling State GDP (GSP)
+
+```python
+
+# Metropolitian GDP - Declaring the City Name
+df = fred.metroGDP(name='Houston')
+df.head()
+
+# Metropolitian GDP - Declaring the CBSA code
+df = fred.metroGDP(cbsa=26420)
+df.head()
+
+# Metropolitian GDP - nominal
+df = fred.metroGDP(cbsa=26420, nominal=True)
+df.head()
+```
