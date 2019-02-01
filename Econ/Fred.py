@@ -4,6 +4,7 @@ import pandas as pd
 import pandas_datareader.data as web
 import re
 from .CBSA import *
+from .DateFormatter import *
 
 class FRED(object):
 
@@ -18,44 +19,55 @@ class FRED(object):
 
     def start_date(self, date=None, year=None, month=None, day=None, full=False):
         """ This function defines the start date for the query"""
-        if date is not None:
-            try:
-                mat=re.match('(\d{2})[/.-](\d{2})[/.-](\d{4})$', date)
-                if mat is not None:
-                    match = dt.datetime(*(map(int, mat.groups()[-1::-1])))
-                    self.start = dt.datetime.strptime(str(match),'%m %d %Y')
+        try:
+            F = Formatter()
+            if date is not None:
+                #Logic For other Formats
+                if F.date_formatter(date,'/') is not None:
+                    self.start = F.date_formatter(date,'/')
+                    return self.start
+                elif F.date_formatter(date,'-') is not None:
+                    self.start = F.date_formatter(date,'-')
+                    return self.start
+                elif F.date_formatter(date,'.') is not None:
+                    self.start = F.date_formatter(date,'.')
+                    return self.start
                 else:
-                    pass
-            except ValueError:
-                pass
-            return self.start
-        elif full is not False:
-            self.start = dt.datetime.strptime('1800-01-01','%Y-%m-%d')
-            return self.start
-        else:
-            self.start = dt.datetime(year, month, day)
-            return self.start
+                    raise ValueError('Not a Valid Date. It must be (m/d/y), (d/m/y), or (y/m/d)..')
+            elif full is not False:
+                self.start = dt.datetime.strptime('1800-01-01','%Y-%m-%d')
+                return self.start
+            else:
+                self.start = dt.datetime(year, month, day)
+                return self.start
+        except ValueError:
+            print("Check the date that you submitted. It must be (m/d/y), (d/m/y), or (y/m/d)..")
 
     def end_date(self, date=None, year=None, month=None, day=None, full=False):
         """ This function defines the End Date for the query."""
-        if date is not None:
-            try:
-                mat=re.match('(\d{2})[/.-](\d{2})[/.-](\d{4})$', date)
-                if mat is not None:
-                    match = dt.datetime(*(map(int, mat.groups()[-1::-1])))
-                    self.end = dt.datetime.strptime(str(match),'%m %d %Y')
+        try:
+            F = Formatter()
+            if date is not None:
+                #Logic For other Formats
+                if F.date_formatter(date,'/') is not None:
+                    self.end = F.date_formatter(date,'/')
+                    return self.end
+                elif F.date_formatter(date,'-') is not None:
+                    self.end = F.date_formatter(date,'-')
+                    return self.end
+                elif F.date_formatter(date,'.') is not None:
+                    self.end = F.date_formatter(date,'.')
+                    return self.end
                 else:
-                    pass
-            except ValueError:
-                pass
-            return self.end
-        elif full is not False:
-            self.end = dt.datetime.now()
-            return self.end
-        else:
-            self.end = dt.datetime(year, month, day)
-            return self.end
-
+                    raise ValueError('Not a Valid Date. It must be (m/d/y), (d/m/y), or (y/m/d)..')
+            elif full is not False:
+                self.end = dt.datetime.now()
+                return self.end
+            else:
+                self.end = dt.datetime(year, month, day)
+                return self.end
+        except ValueError:
+            print("Check the date that you submitted. It must be (m/d/y), (d/m/y), or (y/m/d)..")
 ############################################################################################
 #Federal: GDP
 ############################################################################################
@@ -70,11 +82,13 @@ class FRED(object):
             if nominal == True:
                 #2012-Chained Dollars
                 df = web.DataReader(code, 'fred', self.start, self.end)
+                return df
             else:
                 df = web.DataReader(code + 'C1', 'fred', self.start, self.end)
+                return df
         except ValueError:
-            pass
-        return df
+            print('The arguement nominal is a Boolean Value. Please pass True or False.')
+
 
 ############################################################################################
 #State: GDP
@@ -87,16 +101,10 @@ class FRED(object):
         """
         code = 'NGSP'
         try:
-            if len(state) == 0:
-                return state
-            elif len(state) == 2:
-                df = web.DataReader(state + code, 'fred', self.start, self.end)
-                return df
-            else:
-                assert len(state) == 2, "State should be a string of length 2"
-        except :
-            assert len(state) == 2, "State should be a string of length 2"
-        return df
+            df = web.DataReader(state + code, 'fred', self.start, self.end)
+            return df
+        except ValueError:
+             print("Invalid State Abbreviation. The state abbreviation should be a string of length 2")
 
 ############################################################################################
 #Metropolitian: GDP
@@ -114,7 +122,7 @@ class FRED(object):
                 code = 'NGMP'
             else:
                 code = 'RGMP'
-            if cbsa is None:
+            if name is not None:
                 hyphen = r"[-]"
                 for k,v in CBSA_Codes.items():
                     split = re.split(hyphen, v)
@@ -122,14 +130,18 @@ class FRED(object):
                         match= re.search(str(name),v)
                         if match != None:
                             key = k
+                            df = web.DataReader(code+str(key), 'fred', self.start, self.end)
+                            return df
                         else:
-                            pass
-                df = web.DataReader(code+str(key), 'fred', self.start, self.end)
+                            raise ValueError('Not a valid census bureau statistical area (cbsa) name.')
             elif cbsa is not None:
-                df = web.DataReader(code+str(cbsa), 'fred', self.start, self.end)
+                try:
+                    df = web.DataReader(code+str(cbsa), 'fred', self.start, self.end)
+                    return df
+                except ValueError:
+                    print('')
             else:
-                pass
-            return df
+                raise ValueError('Not a valid census bureau statistical area (cbsa) code or name.')
 
 ############################################################################################
 #Federal: Unemployment Rate
