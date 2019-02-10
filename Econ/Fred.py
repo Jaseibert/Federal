@@ -44,7 +44,7 @@ class FRED(object):
             print("Check the date that you submitted. It must be (m/d/y), (d/m/y), or (y/m/d)..")
 
     def end_date(self, date=None, year=None, month=None, day=None, full=False):
-        """ This function defines the End Date for the query."""
+        """ This function defines the end date for the query"""
         try:
             F = Formatter()
             if date is not None:
@@ -68,6 +68,7 @@ class FRED(object):
                 return self.end
         except ValueError:
             print("Check the date that you submitted. It must be (m/d/y), (d/m/y), or (y/m/d)..")
+
 ############################################################################################
 #Federal: GDP
 ############################################################################################
@@ -79,12 +80,12 @@ class FRED(object):
         """
         code = 'GDP'
         try:
-            if nominal == True:
+            if nominal is True:
                 #2012-Chained Dollars
-                df = web.DataReader(code, 'fred', self.start, self.end)
+                df = web.DataReader(code+ 'C1', 'fred', self.start, self.end)
                 return df
             else:
-                df = web.DataReader(code + 'C1', 'fred', self.start, self.end)
+                df = web.DataReader(code, 'fred', self.start, self.end)
                 return df
         except ValueError:
             print('The arguement nominal is a Boolean Value. Please pass True or False.')
@@ -118,22 +119,25 @@ class FRED(object):
             cbsa (int):    The CBSA code for a metro.
             nominal (Bool): nominal GDP or Real GDP
             """
-            if nominal == True:
+            if nominal is True:
                 code = 'NGMP'
             else:
                 code = 'RGMP'
+
             if name is not None:
                 hyphen = r"[-]"
-                for k,v in CBSA_Codes.items():
-                    split = re.split(hyphen, v)
-                    for word in split:
-                        match= re.search(str(name),v)
-                        if match != None:
-                            key = k
-                            df = web.DataReader(code+str(key), 'fred', self.start, self.end)
-                            return df
-                        else:
-                            raise ValueError('Not a valid census bureau statistical area (cbsa) name.')
+                try:
+                    for k,v in CBSA_Codes.items():
+                        split_metro_list = re.split(hyphen, v)
+                        for metro in split_metro_list:
+                            match = re.search(str(name),metro)
+                            if match is not None:
+                                df = web.DataReader(code+str(k), 'fred', self.start, self.end)
+                                return df
+                            else:
+                                pass
+                except ValueError:
+                    print('Not a valid census bureau statistical area (cbsa) name.')
             elif cbsa is not None:
                 try:
                     df = web.DataReader(code+str(cbsa), 'fred', self.start, self.end)

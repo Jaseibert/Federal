@@ -1,5 +1,6 @@
 from Econ.Fred import *
 from Econ.CBSA import *
+from Econ.DateFormatter import *
 import datetime as dt
 import unittest
 import pandas_datareader.data as web
@@ -9,17 +10,26 @@ class setup_tests(object):
     def __init__(self):
         return
 
-    def setup_test_dates(self,date=False,date1=False,year=False,month=False,day=False,full=False):
+    def setup_test_dates(self,date=False,date1=False,date2=False,date3=False,year=False,month=False,day=False,full=False):
+        '''Sets up a consistent enviornment for testing the start and end date functions.'''
         f = FRED()
-        if date is not False:
+        if date is True:
             start = f.start_date(date='1/1/1900')
-            end = f.end_date(date='1/1/2018')
+            end = f.end_date(date='1/1/2010')
             return start,end
-        elif date1 is not False:
+        elif date1 is True:
             start = f.start_date(date='1-1-1900')
-            end = f.end_date(date='1-1-2018')
+            end = f.end_date(date='1-1-2010')
             return start,end
-        elif full is not False:
+        elif date2 is True:
+            start = f.start_date(date='1.1.1900')
+            end = f.end_date(date='1.1.2010')
+            return start,end
+        elif date3 is True:
+            start = f.start_date(date='20.1.1900')
+            end = f.end_date(date='20.1.2010')
+            return start,end
+        elif full is True:
             start = f.start_date(full=True)
             end = f.end_date(full=True)
             return start,end
@@ -29,6 +39,8 @@ class setup_tests(object):
             return start,end
 
     def setup_test_gdp(self,nominal=True):
+        '''Sets up a consistent enviornment for testing the GDP function.'''
+
         f = FRED()
         f.start_date(date='1/1/1900')
         f.end_date(date='1/1/2018')
@@ -40,20 +52,24 @@ class setup_tests(object):
             return df
 
     def setup_test_state_gdp(self):
+        '''Sets up a consistent enviornment for testing the stateGDP function.'''
+
         f = FRED()
         f.start_date(date='1/1/1900')
         f.end_date(date='1/1/2018')
         df = f.stateGDP('TX')
         return df
 
-    def setup_test_metro_gdp(name=False,cbsa=False,nominal=False):
+    def setup_test_metro_gdp(self,name=False,cbsa=False,nominal=False):
+        '''Sets up a consistent enviornment for testing the MetroGDP function.'''
+
         f = FRED()
         f.start_date(date='1/1/1900')
         f.end_date(date='1/1/2018')
-        if name is not False:
+        if name is not False and nominal is False:
             df = f.metroGDP(name='Houston')
             return df
-        elif cbsa is not False:
+        elif cbsa is not False and nominal is False:
             df = f.metroGDP(cbsa=26420)
             return df
         elif cbsa is not False and nominal is not False:
@@ -68,89 +84,109 @@ class setup_tests(object):
 class TestFRED(unittest.TestCase):
 
     def test_dates_date_0(self):
+        '''Tests the that the dates can handle '\' as the deliminator.'''
         s = setup_tests()
         start,end = s.setup_test_dates(date=True)
         self.assertEqual(start, dt.datetime(1900,1,1))
-        self.assertEqual(end, dt.datetime(2018,1,1))
+        self.assertEqual(end, dt.datetime(2010,1,1))
 
     def test_dates_date_1(self):
+        ''''Tests the that the dates can handle '-' as the deliminator.'''
         s = setup_tests()
         start,end = s.setup_test_dates(date1=True)
         self.assertEqual(start, dt.datetime(1900,1,1))
-        self.assertEqual(end, dt.datetime(2018,1,1))
+        self.assertEqual(end, dt.datetime(2010,1,1))
 
-    def test_dates_date_error(self):
-        f = FRED()
-        with self.assertRaises(ValueError):
-            start = f.start_date(date='Jeremy')
-            end = f.end_date(date='Jeremy')
+    def test_dates_date_2(self):
+        '''Tests the that the dates can handle '.' as the deliminator.'''
+        s = setup_tests()
+        start,end = s.setup_test_dates(date2=True)
+        self.assertEqual(start, dt.datetime(1900,1,1))
+        self.assertEqual(end, dt.datetime(2010,1,1))
+
+    def test_dates_date_3(self):
+        '''Tests the that the dates can handle the "Day/Month/Year format"'''
+        s = setup_tests()
+        start,end = s.setup_test_dates(date3=True)
+        self.assertEqual(start, dt.datetime(1900,1,20))
+        self.assertEqual(end, dt.datetime(2010,1,20))
 
     def test_dates_ymd(self):
+        '''Tests the that the dates function parameters year, month and day work properly.'''
         s=setup_tests()
         start,end = s.setup_test_dates(year=True,month=True,day=True)
         self.assertEqual(start, dt.datetime(1900,1,1))
         self.assertEqual(end, dt.datetime(1900,1,1))
 
     def test_dates_ymd_error(self):
+        '''Tests that the dates function parameters year, month and day error properly.'''
         f=FRED()
         with self.assertRaises(TypeError):
             start = f.start_date(year='1900',month='1',day='1')
             end = f.end_date(year='1900',month='1',day='1')
 
     def test_nominal_gdp(self):
+        '''Tests that the GDP function with the nominal parameter set to pull Nominal GDP works properly.'''
         s=setup_tests()
         df = s.setup_test_gdp(nominal=True)
         start,end = s.setup_test_dates(date=True)
         test_df = web.DataReader('GDPC1', 'fred', start, end)
-        self.assertEqual(df,test_df)
+        self.assertEqual(df['GDPC1'][10],test_df['GDPC1'][10])
 
     def test_real_gdp(self):
+        '''Tests that the GDP function with the nominal parameter set to pull Real GDP works properly.'''
         s=setup_tests()
         df = s.setup_test_gdp(nominal=False)
         start,end = s.setup_test_dates(date=True)
         test_df = web.DataReader('GDP', 'fred', start, end)
-        self.assertEqual(df[0],test_df[0])
+        self.assertEqual(df['GDP'][2],test_df['GDP'][2])
 
     def test_state_gdp(self):
+        '''Tests that the state GDP function works properly.'''
         s=setup_tests()
         df = s.setup_test_state_gdp()
         start,end = s.setup_test_dates(date=True)
         test_df = web.DataReader('TXNGSP', 'fred', start, end)
-        self.assertEqual(df,test_df)
+        self.assertEqual(df['TXNGSP'][5],test_df['TXNGSP'][5])
 
     def test_state_gdp_error(self):
+        '''Tests that the state GDP function errors properly.'''
         s=setup_tests()
         state = 'Texas'
         with self.assertRaises(TypeError):
             df = s.setup_test_state_gdp(state)
 
     def test_metro_gdp_name(self):
+        '''Tests that the metroGDP function with the name paramater selected parses a metro name properly.'''
         s=setup_tests()
-        df = s.setup_test_metro_gdp(name=True,nominal=True)
+        df = s.setup_test_metro_gdp(name=True,nominal=False)
         start,end = s.setup_test_dates(date=True)
         test_df = web.DataReader('RGMP26420', 'fred', start, end)
-        self.assertEqual(df,test_df)
+        self.assertEqual(df['RGMP26420'][0],test_df['RGMP26420'][0])
 
     def test_metro_gdp_cbsa(self):
+        '''Tests that the metroGDP function with the cbsa paramater selected parses the cbsa properly.'''
         s=setup_tests()
         df = s.setup_test_metro_gdp(cbsa=True, nominal=False)
         start,end = s.setup_test_dates(date=True)
         test_df = web.DataReader('RGMP26420', 'fred', start, end)
-        self.assertEqual(df,test_df)
+        self.assertEqual(df['RGMP26420'][0],test_df['RGMP26420'][0])
 
     def test_metro_gdp_cbsa_nominal(self):
+        '''Tests that the metroGDP function with the cbsa & nominal paramaters selected works properly.'''
         s=setup_tests()
         df = s.setup_test_metro_gdp(cbsa=True, nominal=True)
         start,end = s.setup_test_dates(date=True)
         test_df = web.DataReader('NGMP26420', 'fred', start, end)
-        self.assertEqual(df,test_df)
+        self.assertEqual(df['NGMP26420'][0],test_df['NGMP26420'][0])
 
     def test_metro_gdp_name_nominal(self):
+        '''Tests that the metroGDP function with the name & nominal paramaters selected works properly.'''
         s=setup_tests()
         df = s.setup_test_metro_gdp(name=True,nominal=True)
         start,end = s.setup_test_dates(date=True)
         test_df = web.DataReader('NGMP26420', 'fred', start, end)
-        self.assertEqual(df,test_df)
+        self.assertEqual(df['NGMP26420'][2],test_df['NGMP26420'][2])
 
 if __name__ == "__main__":
     unittest.main()

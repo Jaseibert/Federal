@@ -11,11 +11,16 @@ class Formatter(object):
         if re.search(d, dates) is not None:
             try:
                 val = dt.datetime.strptime(str(dates),'%m'+delim+'%d'+delim+'%Y')
-                return val
+                if val is not None:
+                    return val
             except ValueError:
                 try:
                     val = dt.datetime.strptime(str(dates),'%d'+delim+'%m'+delim+'%Y')
-                    return val
+                    if val is not None:
+                        return val
                 except ValueError:
                     val = dt.datetime.strptime(str(dates),'%Y'+delim+'%m'+delim+'%d')
-                    return val
+                    if val is not None:
+                        return val
+                    else:
+                        raise ValueError('Date cannot be formatted.')
