@@ -1,10 +1,22 @@
 # Federal
 
-This is a simple package built on top of pandas datareader to pull in Federal Reserve Data from the Federal Reserve in St. Louis (FRED)
+This is a simple package built on top of pandas datareader to pull in Federal Reserve Data from the Federal Reserve in St. Louis (FRED). 
 
 ## Basic Usage:
 
+he module FRED is used to interact with the Federal Reserve API. We import it as follows.
+
+```python
+
+# Import
+from Federal.Econ import FRED
+```
+
 ### 1. Setting Start & End Dates
+
+Once imported, you delare the start and end dates via the start_date and end_date functions. These functions define the range of dates for the data that you are for. Once declared these values will be applied to each query unless explicitly changed. 
+
+If the dates are out of range, eiter too high or too low the query will not error, but willreturn the latest or most recent values within the dataset. 
 
 ```python
 
