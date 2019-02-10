@@ -2,47 +2,92 @@
 
 This is a simple package built on top of pandas datareader to pull in Federal Reserve Data from the Federal Reserve in St. Louis (FRED). 
 
+[Setting Start & End Dates](#setting-start-&-end-dates)
+
 ## Basic Usage:
 
-he module FRED is used to interact with the Federal Reserve API. We import it as follows.
+We import the module FRED, which is used to interact with the Federal Reserve API, as follows:
 
 ```python
 
-# Import
+# Import the FRED Module
 from Federal.Econ import FRED
+
+#Instatiate a FRED Object
+f = Econ.FRED()
+
+#Set your Start & End Dates
+f.start_date(1900,1,1)
+f.end_date(2018,1,1)
+
+# Make the Call
+df = fred.metroGDP(name='Houston')
+df.head()
+
 ```
 
-### 1. Setting Start & End Dates
+## Setting Start & End Dates 
 
-Once imported, you delare the start and end dates via the start_date and end_date functions. These functions define the range of dates for the data that you are for. Once declared these values will be applied to each query unless explicitly changed. 
+Once imported, you delare the start date and end date via the `FRED.start_date()` and `FRED.end_date()` functions. These functions define the range of dates for the data that you are for. Once declared these values will be applied to each query unless explicitly changed. 
 
-If the dates are out of range, eiter too high or too low the query will not error, but willreturn the latest or most recent values within the dataset. 
+There are several different datetime format variants that the `FRED.start_date()` and `FRED.end_date()` functions accept. 
 
+1. DateTime format: (Year, Month, Day) *Integers*
 ```python
-
-# Setting Dates
-fred = FRED()
-fred.start_date(1900,1,1)
-fred.end_date(2018,1,1)
+f = Econ.FRED()
+f.start_date(1900,1,1)
+f.end_date(2018,1,1)
 ```
-### 2. Pulling GDP (nGDP or rGDP)
+
+2. DateTime format: (Day/Month/Year) *String*
+```python
+f = Econ.FRED()
+f.start_date('1/1/1900')
+f.end_date('1/1/2018')
+```
+
+3. DateTime format: (Day-Month-Year) *String*
+```python
+f = Econ.FRED()
+f.start_date('1-1-1900')
+f.end_date('1-1-2018')
+```
+
+4. DateTime format: (Day.Month.Year) *String*
+```python
+f = Econ.FRED()
+f.start_date('1.1.1900')
+f.end_date('1.1.2018')
+```
+
+5. DateTime format: (Month/Day/Year) *String*
+```python
+f = Econ.FRED()
+f.start_date('14/1/1900')
+f.end_date('16/1/2018')
+```
+
+
+### 2. Pulling National GDP (nomimalGDP or realGDP)
+
+
 
 ```python
 
 # Nominal GDP
-df = fred.GDP(nominal=True)
+df = f.GDP(nominal=True)
 df.head()
 
 # real GDP - Default
-df = fred.GDP()
+df = f.GDP()
 df.head()
 
 # Seasonally-Adjusted nGDP
-df = fred.GDP(nominal=True, sa=True)
+df = f.GDP(nominal=True, sa=True)
 df.head()
 
 # Seasonally-Adjusted rGDP
-df = fred.GDP(sa=True)
+df = f.GDP(sa=True)
 df.head()
 ```
 
