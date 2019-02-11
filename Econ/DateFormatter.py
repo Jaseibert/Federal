@@ -23,4 +23,4 @@ class Formatter(object):
                     if val is not None:
                         return val
                     else:
-                        raise ValueError('Date cannot be formatted.')
+                        raise ValueError('Date cannot be formatted')

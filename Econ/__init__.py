@@ -1,3 +1,3 @@
 # __init__.py
-from .Fred import *
+from .FRED import *
 from .CBSA import *

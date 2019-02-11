@@ -1,4 +1,4 @@
-from Econ.Fred import *
+from Econ.FRED import *
 from Econ.CBSA import *
 from Econ.DateFormatter import *
 import datetime as dt
@@ -14,26 +14,32 @@ class setup_tests(object):
         '''Sets up a consistent enviornment for testing the start and end date functions.'''
         f = FRED()
         if date is True:
+            #Test for the deliminator "/"
             start = f.start_date(date='1/1/1900')
             end = f.end_date(date='1/1/2010')
             return start,end
         elif date1 is True:
+            #Test for the deliminator "-"
             start = f.start_date(date='1-1-1900')
             end = f.end_date(date='1-1-2010')
             return start,end
         elif date2 is True:
+            #Test for the deliminator "."
             start = f.start_date(date='1.1.1900')
             end = f.end_date(date='1.1.2010')
             return start,end
         elif date3 is True:
+            #Test for the Non-North American formatting of DateTimes
             start = f.start_date(date='20.1.1900')
             end = f.end_date(date='20.1.2010')
             return start,end
         elif full is True:
+            #Test for the full arguement
             start = f.start_date(full=True)
             end = f.end_date(full=True)
             return start,end
         else:
+            #Test for the YMD arguement
             start = f.start_date(year=1900,month=1,day=1)
             end = f.end_date(year=1900,month=1,day=1)
             return start,end

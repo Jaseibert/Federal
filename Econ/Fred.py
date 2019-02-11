@@ -44,7 +44,10 @@ class FRED(object):
             print("Check the date that you submitted. It must be (m/d/y), (d/m/y), or (y/m/d)..")
 
     def end_date(self, date=None, year=None, month=None, day=None, full=False):
-        """ This function defines the end date for the query"""
+        """ This function defines the end date for the query
+
+        date:
+        """
         try:
             F = Formatter()
             if date is not None:
@@ -69,23 +72,21 @@ class FRED(object):
         except ValueError:
             print("Check the date that you submitted. It must be (m/d/y), (d/m/y), or (y/m/d)..")
 
-############################################################################################
-#Federal: GDP
-############################################################################################
-
     def GDP(self,nominal=False):
         """ This function reads in Real or Nominal GDP in Billions of Dollars.
 
-        nominal (Boolean):
+        nominal (Bool): Defines either Real GDP or Nominal GDP
         """
         code = 'GDP'
         try:
             if nominal is True:
                 #2012-Chained Dollars
                 df = web.DataReader(code+ 'C1', 'fred', self.start, self.end)
+                df.rename(columns = {f'{code}C1':'nGDP_2012Chained_Billions$'}, inplace = True)
                 return df
             else:
                 df = web.DataReader(code, 'fred', self.start, self.end)
+                df.rename(columns = {f'{code}':'rGDP_2012Chained_Billions$'}, inplace = True)
                 return df
         except ValueError:
             print('The arguement nominal is a Boolean Value. Please pass True or False.')
@@ -103,6 +104,7 @@ class FRED(object):
         code = 'NGSP'
         try:
             df = web.DataReader(state + code, 'fred', self.start, self.end)
+            df.rename(columns = {f'{state}{code}':f'{state}_GDP_Millions$'}, inplace = True)
             return df
         except ValueError:
              print("Invalid State Abbreviation. The state abbreviation should be a string of length 2")
@@ -133,6 +135,7 @@ class FRED(object):
                             match = re.search(str(name),metro)
                             if match is not None:
                                 df = web.DataReader(code+str(k), 'fred', self.start, self.end)
+                                df.rename(columns = {f'{code}{k}':f'{v}_GDP_Millions$'}, inplace = True)
                                 return df
                             else:
                                 pass
@@ -140,10 +143,14 @@ class FRED(object):
                     print('Not a valid census bureau statistical area (cbsa) name.')
             elif cbsa is not None:
                 try:
-                    df = web.DataReader(code+str(cbsa), 'fred', self.start, self.end)
-                    return df
+                    for k,v in CBSA_Codes.items():
+                        match = re.search(str(cbsa),str(k))
+                        if match is not None:
+                            df = web.DataReader(code+str(cbsa), 'fred', self.start, self.end)
+                            df.rename(columns = {f'{code}{k}':f'{v}_GDP_Millions$'}, inplace = True)
+                            return df
                 except ValueError:
-                    print('')
+                    print('This doesnt look like a valid cbsa code, try again.')
             else:
                 raise ValueError('Not a valid census bureau statistical area (cbsa) code or name.')
 
