@@ -10,7 +10,7 @@ This is a simple package built on top of pandas datareader to pull in Federal Re
 from Federal.Econ import FRED
 
 #Instatiate a FRED Object
-f = Econ.FRED()
+f = FRED()
 
 #Set your Start & End Dates
 f.start_date(1900,1,1)
@@ -30,46 +30,46 @@ There are several different datetime format variants that the `FRED.start_date()
 
 1. DateTime format: (Year, Month, Day): **Integer**
 ```python
-f = Econ.FRED()
+f = FRED()
 f.start_date(1900,1,1)
 f.end_date(2018,1,1)
 ```
 
 2. DateTime format: (Day/Month/Year): **String**
 ```python
-f = Econ.FRED()
+f = FRED()
 f.start_date('1/1/1900')
 f.end_date('1/1/2018')
 ```
 
 3. DateTime format: (Day-Month-Year): **String**
 ```python
-f = Econ.FRED()
+f = FRED()
 f.start_date('1-1-1900')
 f.end_date('1-1-2018')
 ```
 
 4. DateTime format: (Day.Month.Year): **String**
 ```python
-f = Econ.FRED()
+f = FRED()
 f.start_date('1.1.1900')
 f.end_date('1.1.2018')
 ```
 
 5. DateTime format: (Month/Day/Year): **String**
 ```python
-f = Econ.FRED()
+f = FRED()
 f.start_date('14/1/1900')
 f.end_date('16/1/2018')
 ```
 
 ### National Gross Domestic Product (GDP) 
 
-After instanting a FRED object, and defining the start and end dates using the `FRED.start_date()` and `FRED.end_date()` functions you can use the function `FRED.GDP()` depending on its parameters to return either nominal GDP or real GDP. 
+After instantiating a FRED object, and defining the start and end dates using the `FRED.start_date()` and `FRED.end_date()` functions you can use the function `FRED.GDP()` depending on its parameters to return either nominal GDP or real GDP. 
 
 ```python
 
-f = Econ.FRED()
+f = FRED()
 f.start_date('1/1/1900')
 f.end_date('1/1/2018')
 
@@ -87,7 +87,7 @@ df.head()
 Similar to the `FRED.GDP()` afer making the necessary calls you can pull in information around State-Level GDP using the `FRED.stateGDP()` function. It requires one arguement, which is the two-character string representing the state of interest. In the case below we pull the state GDP for Indiana. 
 
 ```python
-f = Econ.FRED()
+f = FRED()
 f.start_date('1/1/1900')
 f.end_date('1/1/2018')
 
@@ -103,7 +103,7 @@ The final variation of GDP that the FRED module pulls in is Metropolitan-Level G
 
 ```python
 
-f = Econ.FRED()
+f = FRED()
 f.start_date('1/1/1900')
 f.end_date('1/1/2018')
 
