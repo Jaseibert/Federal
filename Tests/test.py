@@ -1,6 +1,6 @@
-from Econ.FRED import *
-from Econ.CBSA import *
-from Econ.DateFormatter import *
+from Econ.GDP import *
+from Formatter.CBSAFormatter import *
+from Formatter.DateFormatter import *
 import datetime as dt
 import unittest
 import pandas_datareader.data as web
@@ -12,77 +12,80 @@ class setup_tests(object):
 
     def setup_test_dates(self,date=False,date1=False,date2=False,date3=False,year=False,month=False,day=False,full=False):
         '''Sets up a consistent enviornment for testing the start and end date functions.'''
-        f = FRED()
+        d = DateFormatter()
         if date is True:
             #Test for the deliminator "/"
-            start = f.start_date(date='1/1/1900')
-            end = f.end_date(date='1/1/2010')
+            start = d.start_date(date='1/1/1900')
+            end = d.end_date(date='1/1/2010')
             return start,end
         elif date1 is True:
             #Test for the deliminator "-"
-            start = f.start_date(date='1-1-1900')
-            end = f.end_date(date='1-1-2010')
+            start = d.start_date(date='1-1-1900')
+            end = d.end_date(date='1-1-2010')
             return start,end
         elif date2 is True:
             #Test for the deliminator "."
-            start = f.start_date(date='1.1.1900')
-            end = f.end_date(date='1.1.2010')
+            start = d.start_date(date='1.1.1900')
+            end = d.end_date(date='1.1.2010')
             return start,end
         elif date3 is True:
             #Test for the Non-North American formatting of DateTimes
-            start = f.start_date(date='20.1.1900')
-            end = f.end_date(date='20.1.2010')
+            start = d.start_date(date='20.1.1900')
+            end = d.end_date(date='20.1.2010')
             return start,end
         elif full is True:
             #Test for the full arguement
-            start = f.start_date(full=True)
-            end = f.end_date(full=True)
+            start = d.start_date(full=True)
+            end = d.end_date(full=True)
             return start,end
         else:
             #Test for the YMD arguement
-            start = f.start_date(year=1900,month=1,day=1)
-            end = f.end_date(year=1900,month=1,day=1)
+            start = d.start_date(year=1900,month=1,day=1)
+            end = d.end_date(year=1900,month=1,day=1)
             return start,end
 
     def setup_test_gdp(self,nominal=True):
         '''Sets up a consistent enviornment for testing the GDP function.'''
 
-        f = FRED()
-        f.start_date(date='1/1/1900')
-        f.end_date(date='1/1/2018')
+        d = DateFormatter()
+        g = GDP()
+        d.start_date(date='1/1/1900')
+        d.end_date(date='1/1/2018')
         if nominal is True:
-            df = f.GDP(nominal=True)
+            df = g.GDP(nominal=True)
             return df
         else:
-            df = f.GDP(nominal=False)
+            df = g.GDP(nominal=False)
             return df
 
     def setup_test_state_gdp(self):
         '''Sets up a consistent enviornment for testing the stateGDP function.'''
 
-        f = FRED()
-        f.start_date(date='1/1/1900')
-        f.end_date(date='1/1/2018')
-        df = f.stateGDP('TX')
+        d = DateFormatter()
+        g = GDP()
+        d.start_date(date='1/1/1900')
+        d.end_date(date='1/1/2018')
+        df = g.stateGDP('TX')
         return df
 
     def setup_test_metro_gdp(self,name=False,cbsa=False,nominal=False):
         '''Sets up a consistent enviornment for testing the MetroGDP function.'''
 
-        f = FRED()
-        f.start_date(date='1/1/1900')
-        f.end_date(date='1/1/2018')
+        d = DateFormatter()
+        g = GDP()
+        d.start_date(date='1/1/1900')
+        d.end_date(date='1/1/2018')
         if name is not False and nominal is False:
-            df = f.metroGDP(name='Houston')
+            df = g.metroGDP(name='Houston')
             return df
         elif cbsa is not False and nominal is False:
-            df = f.metroGDP(cbsa=26420)
+            df = g.metroGDP(cbsa=26420)
             return df
         elif cbsa is not False and nominal is not False:
-            df = f.metroGDP(cbsa=26420,nominal=True)
+            df = g.metroGDP(cbsa=26420,nominal=True)
             return df
         elif name is not False and nominal is not False:
-            df = f.metroGDP(name='Houston', nominal=True)
+            df = g.metroGDP(name='Houston', nominal=True)
             return df
         else:
             pass
@@ -126,10 +129,10 @@ class TestFRED(unittest.TestCase):
 
     def test_dates_ymd_error(self):
         '''Tests that the dates function parameters year, month and day error properly.'''
-        f=FRED()
+        d = DateFormatter()
         with self.assertRaises(TypeError):
-            start = f.start_date(year='1900',month='1',day='1')
-            end = f.end_date(year='1900',month='1',day='1')
+            start = d.start_date(year='1900',month='1',day='1')
+            end = d.end_date(year='1900',month='1',day='1')
 
     def test_nominal_gdp(self):
         '''Tests that the GDP function with the nominal parameter set to pull Nominal GDP works properly.'''

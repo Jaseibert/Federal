@@ -1,0 +1,52 @@
+INITIAL PACKAGE STRUCTURE
+Federal/                      Top-level package
+    __init__.py               Initialize the Federal package
+    Econ/                     Subpackage for Economic Variables
+        __init__.py
+        FRED.py               Module for GDP, StartDate, and EndDate
+        DateFormatter.py      Module for Parsing DateTimes
+        CBSA.py               Dictionary containing Core-Based Statistical Area Codes/Names
+        ...
+
+CURRENT PACKAGE STRUCTURE
+Federal/                      Top-level package
+    __init__.py               Initialize the Federal package
+    Formatter/                Subpackage for Formatting & Dictionaries
+        __init__.py
+        CBSAFormatter.py      Dictionary containing Core-Based Statistical Area Codes/Names
+        DateFormatter.py      Module for Parsing DateTimes, StartDate, and EndDate
+        ...
+    Econ/                     Subpackage for Economic Variables
+        __init__.py
+        GDP.py                Module for National, State, Metro GDP
+        Unemployment.py       Module for Unemployment
+        ...
+
+GOAL PACKAGE STRUCTURE FOR FUTURE VERSION
+Federal/                      Top-level package
+    __init__.py               Initialize the Federal package
+    Formatter/                Subpackage for Formatting & Dictionaries
+        __init__.py
+        CBSAFormatter.py      Dictionary containing Core-Based Statistical Area Codes/Names
+        DateFormatter.py      Module for Parsing DateTimes, StartDate, and EndDate
+        ...
+    National/                 Subpackage for National-Level Economic Variables
+        __init__.py
+        GDP.py                Module for National GDP
+        Unemployment.py       Module for National Unemployment
+        ...
+    State/                    Subpackage for State-Level Economic Variables
+        __init__.py
+        GDP.py                Module for State GDP
+        Unemployment.py       Module for State Unemployment
+        ...
+    Metro/                    Subpackage for Metro-Level Economic Variables
+        __init__.py
+        GDP.py                Module for Metro GDP
+        Unemployment.py       Module for Metro Unemployment
+        ...
+    County/                   Subpackage for National-Level Economic Variables
+        __init__.py
+        GDP.py                Module for County GDP
+        Unemployment.py       
+        ...

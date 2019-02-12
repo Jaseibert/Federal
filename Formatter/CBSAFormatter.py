@@ -1,4 +1,4 @@
-# Dictionary of Census Bureau Statistical Area (CBSA) Codes
+# Dictionary of Core-Based Statistical Area (CBSA) Codes
 CBSA_Codes = {
     10180 : 'Abilene',
     10380 : 'Aguadilla-Isabela-San Sebastian',
