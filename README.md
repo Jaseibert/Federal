@@ -134,7 +134,7 @@ d = DateFormatter()
 
 #Set the Dates
 d.start_date('1/1/1900')
-f.end_date('1/1/2018')
+d.end_date('1/1/2018')
 
 # State GDP
 df = g.state_gdp('IN')
@@ -156,8 +156,8 @@ g = GDP()
 d = DateFormatter()
 
 #Set the Dates
-g.start_date('1/1/1900')
-g.end_date('1/1/2018')
+d.start_date('1/1/1900')
+d.end_date('1/1/2018')
 
 # Metropolitan GDP - Passing the City Name as an argument
 df = g.metro_gdp(name='Houston')
@@ -175,3 +175,27 @@ df.head()
 df = g.metro_gdp(name='Houston', nominal=True)
 df.head()
 ```
+### National Unemployment
+
+Unemployment is defined by the `Unemployment.national_unemp()` function. This function takes an argument `sa` which returns either seasonally-adjusted non seasonally-adjusted unemployment.
+
+```python
+# Import the GDP and DateFormatter Modules
+from Federal.Econ import Unemployment
+from Federal.Formatter import DateFormatter
+
+#Insatiate the GDP and DateFormatter Objects
+u = Unemployment()
+d = DateFormatter()
+
+#Set the Dates
+d.start_date('1/1/1900')
+d.end_date('1/1/2018')
+
+# Seasonally-Adjusted National Unemployment
+df = u.national_unemp(sa=True)
+df.head()
+
+# Non Seasonally-Adjusted National Unemployment
+df = u.national_unemp(sa=False)
+df.head()

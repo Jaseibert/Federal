@@ -3,6 +3,10 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+INSTALL_REQUIRES = (
+    ['pandas>=0.19.2', 'pandas-datareader=0.7.0', 're', 'datetime']
+)
+
 setuptools.setup(
     name='Federal',
     version='0.0.2',
