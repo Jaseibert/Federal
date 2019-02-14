@@ -1,6 +1,6 @@
-from Econ.GDP import *
-from Formatter.CBSAFormatter import *
-from Formatter.DateFormatter import *
+import Federal.Econ.GDP
+import Federal.Formatter.CBSAFormatter
+import Federal.Formatter.DateFormatter
 import datetime as dt
 import unittest
 import pandas_datareader.data as web
@@ -199,4 +199,3 @@ class TestFRED(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-    print("Everything passed")

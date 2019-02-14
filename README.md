@@ -1,6 +1,6 @@
 # Federal Package
 
-This is a simple module built on top of Pandas-Datareader to make it easer to pull in Federal Reserve Data from the Federal Reserve in St. Louis (FRED).
+This is a simple package built on top of Pandas-Datareader to make it easer to pull in Federal Reserve Data from the Federal Reserve in St. Louis (FRED).
 
 ## Installation
 

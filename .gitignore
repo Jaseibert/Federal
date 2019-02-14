@@ -9,3 +9,4 @@ lib/
 pip-selfcheck.json
 Pipfile
 Pipfile.lock
+updating_pypi.txt

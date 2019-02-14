@@ -3,13 +3,9 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-INSTALL_REQUIRES = (
-    ['pandas>=0.19.2', 'pandas-datareader=0.7.0', 're', 'datetime']
-)
-
 setuptools.setup(
     name='Federal',
-    version='0.1.0',
+    version='1.0.1',
     author='Jeremy A. Seibert',
     author_email='Jaseibert2@eagles.usi.edu',
     description="A wrapper on to the pandas-datareader package for easier handling of federal reserve (FRED) data",
